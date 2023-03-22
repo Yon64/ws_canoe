@@ -376,8 +376,8 @@ function OnFlowOnCourse(objJSON)
 		return;
 	//alert("OnFlowOnCourse :"+JSON.stringify(tOnCourse));
 	const nb = tOnCourse.GetNbRows();
-	if (wsContext.bib_select <= 0)
-		wsContext.bib_select = GetBibSelect(tOnCourse);
+	//if (wsContext.bib_select <= 0)
+	wsContext.bib_select = GetBibSelect(tOnCourse);
 	const course_phase = canoe.GetCodeCoursePhase();
 	
 	for (let p=1;p<=wsContext.nb_porte;p++)
@@ -488,24 +488,36 @@ function GetBibSelect(tOnCourse)
 	const nb = tOnCourse.GetNbRows();
 	if (nb > 0)
 	{
-		if (wsContext.bib_filter == 'pair')
+		if (wsContext.filter == 'bib')
 		{
 			var r = nb-1;
 			while (r >= 0)
 			{
-				if (tOnCourse.GetCellInt('bib', r) % 2 == 0)
+				if (tOnCourse.GetCellInt('bib', r) % wsContext.filter_modulo  == wsContext.filter_index)
 					return tOnCourse.GetCellInt('bib', r);
 				--r;
 			}
 		}
-		else if (wsContext.bib_filter == 'odd')
+		else if (wsContext.filter == 'rk')
 		{
-			var r = nb-1;
-			while (r >= 0)
+			const tRanking = canoe.GetTableRanking();
+			const course_phase = canoe.GetCodeCoursePhase();
+//		alert("ok");
+			if (typeof tRanking === 'object')
 			{
-				if (tOnCourse.GetCellInt('bib', r) % 2 == 1)
-					return tOnCourse.GetCellInt('bib', r);
-				--r;
+				var r = 0;
+				while (r <= nb-1 )
+				{
+					const bib = tOnCourse.GetCellInt('bib', r);
+					const row = canoe.GetRankingBibIndex(tRanking, bib);
+					if (row >= 0)
+					{
+						const rk = tRanking.GetCellInt('Rang'+course_phase, row);
+						if (rk % wsContext.filter_modulo  == wsContext.filter_index)
+							return bib;
+					}
+					++r;
+				}
 			}
 		}
 		else
@@ -514,36 +526,46 @@ function GetBibSelect(tOnCourse)
 		}
 	}
 
-	return -1;
+	return GetBibStart(tOnCourse);
 }
 
-function GetBibStart()
+function GetBibStart(tOnCourse)
 {
-	const tRanking = adv.GetTableUnique(wsContext.notify_ranking, 'ranking');
+	const tRanking = canoe.GetTableRanking();
 	const course_phase = canoe.GetCodeCoursePhase();
 
-	tRanking.OrderBy('Cltc'+course_phase+',Heure_depart'+course_phase);
-	for (let r = 0; r<tRanking.GetNbRows(); r++)
+	if (typeof tRanking === 'object' && typeof tOnCourse === 'object')
 	{
-		if (tRanking.GetCellInt('Tps'+course_phase, r, adv.chrono.KO) == adv.chrono.KO)
+		tRanking.OrderBy('Cltc'+course_phase+',Heure_depart'+course_phase);
+		for (let r = 0; r<tRanking.GetNbRows(); r++)
 		{
-			if (wsContext.bib_filter == 'pair')
+			const i = tOnCourse.GetIndexRow('bib', tRanking.GetCell('Dossard',r));
+			if (i < 0)
 			{
-				if (tRanking.GetCellInt('Dossard', r) % 2 == 0)
-					return tRanking.GetCellInt('Dossard', r);
-			}
-			else if (wsContext.bib_filter == 'odd')
-			{
-				if (tRanking.GetCellInt('Dossard', r) % 2 == 1)
-					return tRanking.GetCellInt('Dossard', r);
-			}
-			else
-			{
-				return tRanking.GetCellInt('Dossard', r);
+				if (tRanking.GetCellInt('Tps'+course_phase, r, adv.chrono.KO) == adv.chrono.KO)
+				{
+					if (wsContext.filter == 'bib')
+					{
+						if (tRanking.GetCellInt('Dossard', r) % wsContext.filter_modulo == wsContext.filter_index)
+							return tRanking.GetCellInt('Dossard', r);
+					}
+					else if (wsContext.filter == 'rk')
+					{
+						const rk = tRanking.GetCellInt('Rang'+course_phase, r);
+//						alert('OK1:bib='+tRanking.GetCell('Dossard', r)+", rk="+rk+", course_phase="+course_phase+", colrkindex="+tRanking.GetIndexColumn('Rang'+course_phase));
+
+						if (rk % wsContext.filter_modulo == wsContext.filter_index)
+							return tRanking.GetCellInt('Dossard', r);
+					}
+					else
+					{
+						return tRanking.GetCellInt('Dossard', r);
+					}
+				}
 			}
 		}
 	}
-
+	
 	return -1;
 }
 
@@ -652,7 +674,8 @@ function ShowLeader(tpsRunning)
 				if (tpsRunning + wsContext.leader_before_finish >= tpsFinish && tpsRunning < tpsFinish)
 				{
 					SetLeaderName(document.querySelector('#block_leader .name'));
-					document.querySelector('#block_leader .time').innerHTML = tRanking.GetCellChrono('Tps'+course_phase, wsContext.leader_index, 'HHMMSSCC');
+					var time_pena = tRanking.GetCellInt('Tps_chrono'+course_phase, wsContext.leader_index, adv.chrono.KO)+canoe.GetCurrentSlalomTotalPenaInter(tRanking, wsContext.leader_index)*1000;
+					document.querySelector('#block_leader .time').innerHTML = adv.GetChrono(time_pena, 'HHMMSSCC');
 					block_leader.style.display = 'block';
 					return;
 				}
@@ -821,9 +844,61 @@ function Init()
 	const queryString = window.location.search;
 	const urlParams = new URLSearchParams(queryString);
 	
-	wsContext.bib_filter = ''; 
+	wsContext.filter = ''; 
+	wsContext.filter_index = 0; 
+	wsContext.filter_modulo = 1; 
+
 	if (urlParams.has('bib_filter'))
-		wsContext.bib_filter = urlParams.get('bib_filter');
+	{
+		wsContext.filter = 'bib'; 
+
+		const filter = urlParams.get('bib_filter');
+		if (filter == 'pair')
+		{
+			wsContext.filter_modulo = 2; 
+			wsContext.filter_index = 0; 
+		}
+		else if (filter == 'odd')
+		{
+			wsContext.filter_modulo = 2; 
+			wsContext.filter_index = 1; 
+		}
+		else
+		{
+			const splits = filter.split("/");
+			if (splits.length == 2)
+			{
+				wsContext.filter_index = parseInt(splits[0]);
+				wsContext.filter_modulo = parseInt(splits[1]);
+			}
+		}
+	}
+	
+	if (urlParams.has('rk_filter'))
+	{
+		wsContext.filter = 'rk'; 
+
+		const filter = urlParams.get('rk_filter');
+		if (filter == 'odd')
+		{
+			wsContext.filter_modulo = 2; 
+			wsContext.filter_index = 0; 
+		}
+		else if (filter == 'pair')
+		{
+			wsContext.filter_modulo = 2; 
+			wsContext.filter_index = 1; 
+		}
+		else
+		{
+			const splits = filter.split("/");
+			if (splits.length == 2)
+			{
+				wsContext.filter_index = parseInt(splits[0]);
+				wsContext.filter_modulo = parseInt(splits[1]);
+			}
+		}
+	}
 
 	wsContext.timeoutFinish = null;
 	wsContext.timeoutInter = null;
