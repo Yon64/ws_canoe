@@ -129,7 +129,12 @@ function  ShowRankingRow(row, tRanking, i, course_phase)
 		document.querySelector('#block_ranking .row'+row+' .rank').innerHTML = '';
 		
 	document.querySelector('#block_ranking .row'+row+' .bib').innerHTML = tRanking.GetCell('Dossard', i);
-	document.querySelector('#block_ranking .row'+row+' .identity').innerHTML = tRanking.GetCell('Bateau', i);
+	
+	if (tRanking.GetCell('Bateau', i).length < 18){
+		document.querySelector('#block_ranking .row'+row+' .identity').innerHTML = tRanking.GetCell('Bateau', i);
+	}else{
+		document.querySelector('#block_ranking .row'+row+' .identity').innerHTML = tRanking.GetCell('Bateau', i).substring(0,18)+'.';
+	}
 	
 	const code_nation = tRanking.GetCell('Code_nation', i);
 
