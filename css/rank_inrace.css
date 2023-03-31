@@ -19,7 +19,7 @@ body
 
 #head {
 	position: absolute;
-	background-image: url("../img/block_ranking.png");
+	
 	background-repeat: no-repeat;
 
 	left:0px;
@@ -29,9 +29,10 @@ body
 
 }
 
+
 #head .place
 {
-
+	display:none;
 	position: absolute;
 
 	left:525px;
@@ -48,6 +49,7 @@ body
 
 #head .title
 {
+	display:none;
 	position: absolute;
 
 	left:800px;
@@ -64,6 +66,7 @@ body
 
 #head .categ
 {
+	display:none;
 	position: absolute;
 
 	left:1225px;
@@ -82,12 +85,17 @@ body
 {
 	position: absolute;
 
-	left:0px;
-	top:160px;
+	left:10px;
+	top:5px;
 	width:100%;
 }	
 
 #block_ranking .row_label
+{
+	display:none;
+}
+
+#block_ranking .label_rank
 {
 	display:none;
 }
@@ -107,6 +115,11 @@ body
 	display:none;
 }
 
+#block_ranking .label_pena
+{
+	display:none;
+}
+
 #block_ranking .label_time
 {
 	display:none;
@@ -115,19 +128,22 @@ body
 #block_ranking .row1
 {
 	position: absolute;
-
+	background-image: url("../img/block_leader.png");
+	background-repeat: no-repeat;
 	left:0px;
-	top:122px;
+	top:0px;
 	width:100%;
 	height:60px;
+	
 }
 
 #block_ranking .row2
 {
 	position: absolute;
-
+	background-image: url("../img/block_leader.png");
+	background-repeat: no-repeat;
 	left:0px;
-	top:174px;
+	top:55px;
 	width:100%;
 	height:60px;
 }
@@ -135,9 +151,10 @@ body
 #block_ranking .row3
 {
 	position: absolute;
-
+	background-image: url("../img/block_leader.png");
+	background-repeat: no-repeat;
 	left:0px;
-	top:227px;
+	top:110px;
 	width:100%;
 	height:60px;
 }
@@ -145,9 +162,10 @@ body
 #block_ranking .row4
 {
 	position: absolute;
-
+	background-image: url("../img/block_leader.png");
+	background-repeat: no-repeat;
 	left:0px;
-	top:280px;
+	top:165px;
 	width:100%;
 	height:60px;
 }
@@ -155,96 +173,52 @@ body
 #block_ranking .row5
 {
 	position: absolute;
-
+	background-image: url("../img/block_leader.png");
+	background-repeat: no-repeat;
 	left:0px;
-	top:331px;
+	top:220px;
 	width:100%;
 	height:60px;
 }
 
-#block_ranking .row6
+
+#block_ranking .rank
 {
 	position: absolute;
 
 	left:0px;
-	top:383px;
-	width:100%;
-	height:60px;
-}
-
-#block_ranking .row7
-{
-	position: absolute;
-
-	left:0px;
-	top:435px;
-	width:100%;
-	height:60px;
-}
-
-#block_ranking .row8
-{
-	position: absolute;
-
-	left:0px;
-	top:487px;
-	width:100%;
-	height:60px;
-}
-
-#block_ranking .row9
-{
-	position: absolute;
-
-	left:0px;
-	top:539px;
-	width:100%;
-	height:60px;
-}
-
-#block_ranking .row10
-{
-	position: absolute;
-
-	left:0px;
-	top:591px;
-	width:100%;
-	height:60px;
-}
-
-#block_ranking .bib
-{
-	position: absolute;
-
-	left:465px;
-	width:60px;
+	width:45px;
 	height:62px;
-	top:20px;
+	top:7px;
 	
 	font-family: Calibri;
-	font-size:25pt;
-	color:rgb(0,27,90);
+	font-size:20pt;
+	color:white;
 
 	font-weight:bold;
 	text-align:right;
 	padding-top:0px;
 }
 
+#block_ranking .bib
+{
+	display:none;
+}
+
 #block_ranking .identity
 {
 	position: absolute;
 
-	left:600px;
-	width:755px;
+	left:100px;
+	width:700px;
 	height:62px;
-	top:20px;
+	top:7px;
 
 	font-family: Calibri;
-	font-size:25pt;
-	
+	font-size:20pt;
 
-	color:rgb(0,27,90);
-	font-weight:bold;
+	color:white;
+	font-weight: bold;
 	text-align:left;
 	padding-top:0px;
 }
@@ -252,30 +226,78 @@ body
 #block_ranking .img_nation
 {
 	position: absolute;
-
-	left:540px;
-	width:80px;
-	height:62px;
-	top:0px;
+	left:60px;
+	top:-1px;
 	padding-top:16px;
 }
 
-#block_ranking .time
+
+#block_ranking .pena
 {
 	position: absolute;
 
-	left:1200px;
-	width:160px;
+	left:1100px;
+	width:50px;
 	height:62px;
 	top:20px;
 	
 	font-family: Calibri;
 	font-size:25pt;
-	font-weight:normal;
+	font-weight: normal;
 	color:rgb(0,27,90);
 
 	text-align:right;
 	padding-top:0px;
+}
+
+#block_ranking .time
+{
+	display: none;
+}
+
+#block_ranking .diff
+{
+	position: absolute;
+
+	left:330px;
+	width:150px;
+	height:62px;
+	top:7px;
+	
+	font-family: Calibri;
+	font-size:22pt;
+	font-weight:bold;
+
+	text-align:right;
+	padding-top:0px;
+}
+
+#block_ranking .yellow
+{
+	color:black;
+	background-image: url("../img/60_140_Y.jpg");
+	background-repeat: repeat-x;
+}
+
+#block_ranking .red
+{
+	color:white;
+	background-image: url("../img/60_140_R.jpg");
+	background-repeat: repeat-x;
+}
+
+#block_ranking .green
+{
+	color:white;
+	background-image: url("../img/60_140_G.jpg");
+	background-repeat: repeat-x;
+}
+
+#block_ranking .empty
+{
+	color:black;
+	background-image: url("../img/60_10_Gray.jpg");
+	background-repeat: repeat-x;
 }
 
 
