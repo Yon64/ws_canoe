@@ -473,6 +473,7 @@ function SetNation(blockName, tRanking, iRow)
 		document.querySelector(blockName+' .img_nation').src = "./img/Flags/Empty.png";
 	else
 		document.querySelector(blockName+' .img_nation').src = "./img/Flags/"+nation+".png";
+												//				"<img src='./img/flags/"+code_nation+".png' height='30' width='48' />";
 }
 
 function SetCateg(blockName, tRanking, iRow)

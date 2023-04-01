@@ -138,7 +138,7 @@ function  ShowRankingRow(row, tRanking, i, course_phase)
 
 	if (code_nation.length > 0)
 	{
-		document.querySelector('#block_ranking .row'+row+' .img_nation').innerHTML = "<img src='./img/flags/"+code_nation+".png' height='48' width='48' />";
+		document.querySelector('#block_ranking .row'+row+' .img_nation').innerHTML = "<img src='./img/flags/"+code_nation+".png' height='30' width='48' />";
 	}
 	else
 	{
